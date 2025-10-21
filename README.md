@@ -175,7 +175,7 @@ See `examples/dev-server.js` for a working example server.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/ghost-chat-embed.git
+git clone https://github.com/rscheiwe/ghost-chat-embed.git
 cd ghost-chat-embed
 
 # Install dependencies
@@ -334,7 +334,7 @@ Contributions welcome! Please read our [Contributing Guide](CONTRIBUTING.md) fir
 
 ## 📄 License
 
-MIT © [Your Name](https://github.com/yourusername)
+MIT © [Your Name](https://github.com/rscheiwe)
 
 ## 🙏 Acknowledgments
 
@@ -344,4 +344,4 @@ MIT © [Your Name](https://github.com/yourusername)
 
 ---
 
-**[Documentation](https://docs.example.com)** • **[Demo](https://demo.example.com)** • **[Issues](https://github.com/yourusername/ghost-chat-embed/issues)**
+**[Documentation](https://docs.example.com)** • **[Demo](https://demo.example.com)** • **[Issues](https://github.com/rscheiwe/ghost-chat-embed/issues)**

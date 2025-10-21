@@ -39,7 +39,8 @@ export function init(userConfig: unknown): void {
     const host = document.createElement("div");
     host.id = "ghost-chat-root";
     // Ensure host doesn't interfere with page layout
-    host.style.cssText = "position: fixed; inset: 0; pointer-events: none; z-index: 999999;";
+    host.style.cssText =
+      "position: fixed; inset: 0; pointer-events: none; z-index: 999999;";
     document.body.appendChild(host);
 
     // Attach shadow root
@@ -52,16 +53,23 @@ export function init(userConfig: unknown): void {
 
     // Debug: log if styles were loaded
     if (!styles || styles.length === 0) {
-      console.warn("[GhostChat] No styles loaded! Build CSS first with: pnpm build:css");
+      console.warn(
+        "[GhostChat] No styles loaded! Build CSS first with: pnpm build:css"
+      );
     } else {
-      console.log("[GhostChat] Loaded", Math.round(styles.length / 1024), "KB of styles");
+      console.log(
+        "[GhostChat] Loaded",
+        Math.round(styles.length / 1024),
+        "KB of styles"
+      );
     }
 
     // Create container
     const container = document.createElement("div");
     container.className = "gc-container";
     // Ensure font family applies (Geist Sans with fallbacks)
-    container.style.fontFamily = '"Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif';
+    container.style.fontFamily =
+      '"Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif';
     shadow.appendChild(container);
 
     // Mount UI with React/Preact
@@ -83,5 +91,5 @@ function logBanner(): void {
     `%c GhostChat v${version} `,
     "background: #3B81F6; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;"
   );
-  console.log("GitHub: https://github.com/yourusername/ghost-chat-embed");
+  console.log("GitHub: https://github.com/rscheiwe/ghost-chat-embed");
 }
