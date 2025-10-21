@@ -72,9 +72,16 @@ export class RootShellController {
       messagesArea.replaceWith(this.reactContainer);
       inputArea.remove();
 
+      // Create portal container for Radix UI portals (keeps them in shadow DOM)
+      const portalContainer = document.createElement("div");
+      portalContainer.id = "gc-portal-container";
+      portalContainer.style.cssText = "position: fixed; z-index: 9999;";
+      this.shadow.appendChild(portalContainer);
+
       // Mount React app
       this.unmountReact = mountIntoShadow(this.reactContainer, {
         config: this.config,
+        portalContainer,
       });
     }
 

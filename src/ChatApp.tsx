@@ -4,6 +4,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { GlobeIcon } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { PortalProvider } from "@/lib/portal-context";
 import {
   Conversation,
   ConversationContent,
@@ -15,16 +16,12 @@ import {
   PromptInput,
   PromptInputButton,
   type PromptInputMessage,
-  PromptInputModelSelect,
-  PromptInputModelSelectContent,
-  PromptInputModelSelectItem,
-  PromptInputModelSelectTrigger,
-  PromptInputModelSelectValue,
   PromptInputSubmit,
   PromptInputTextarea,
   PromptInputTools,
   PromptInputToolbar,
 } from "@/components/ai-elements/prompt-input";
+import { SimpleSelect, SimpleSelectItem } from "@/components/ui/simple-select";
 import {
   Reasoning,
   ReasoningContent,
@@ -44,7 +41,13 @@ const models = [
   { name: "Deepseek R1", value: "deepseek/deepseek-r1" },
 ];
 
-export default function ChatApp({ config }: { config: GhostChatConfig }) {
+export default function ChatApp({
+  config,
+  portalContainer,
+}: {
+  config: GhostChatConfig;
+  portalContainer?: HTMLElement | null;
+}) {
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0]?.value ?? "");
   const [webSearch, setWebSearch] = useState(false);
@@ -85,98 +88,95 @@ export default function ChatApp({ config }: { config: GhostChatConfig }) {
   };
 
   return (
-    <div className="flex h-full flex-col overflow-hidden">
-      {/* Scrollable message area */}
-      <div className="flex-1 overflow-y-auto px-4 pb-24">
-        <Conversation>
-          <ConversationContent>
-            {messages.map((message) => (
-              <div key={message.id}>
-                {message.role === "assistant" && (
-                  <Sources>
-                    {message.parts.map((part, i) => {
-                      if (part.type === "source-url") {
-                        return (
-                          <SourcesContent key={`${message.id}-${i}`}>
-                            <Source href={part.url} title={part.url} />
-                          </SourcesContent>
-                        );
-                      }
-                      return null;
-                    })}
-                  </Sources>
-                )}
-                <Message from={message.role}>
-                  <MessageContent>
-                    {message.parts.map((part, i) => {
-                      switch (part.type) {
-                        case "text":
+    <PortalProvider container={portalContainer ?? null}>
+      <div className="flex h-full flex-col overflow-hidden">
+        {/* Scrollable message area */}
+        <div className="flex-1 overflow-y-auto px-4" style={{ overscrollBehavior: 'contain' }}>
+          <Conversation>
+            <ConversationContent>
+              {messages.map((message) => (
+                <div key={message.id}>
+                  {message.role === "assistant" && (
+                    <Sources>
+                      {message.parts.map((part, i) => {
+                        if (part.type === "source-url") {
                           return (
-                            <Response key={`${message.id}-${i}`}>
-                              {part.text}
-                            </Response>
+                            <SourcesContent key={`${message.id}-${i}`}>
+                              <Source href={part.url} title={part.url} />
+                            </SourcesContent>
                           );
-                        case "reasoning":
-                          return (
-                            <Reasoning
-                              key={`${message.id}-${i}`}
-                              className="w-full"
-                              isStreaming={status === "streaming"}
-                            >
-                              <ReasoningTrigger />
-                              <ReasoningContent>{part.text}</ReasoningContent>
-                            </Reasoning>
-                          );
-                        default:
-                          return null;
-                      }
-                    })}
-                  </MessageContent>
-                </Message>
-              </div>
-            ))}
-            {status === "submitted" && <Loader />}
-          </ConversationContent>
+                        }
+                        return null;
+                      })}
+                    </Sources>
+                  )}
+                  <Message from={message.role}>
+                    <MessageContent>
+                      {message.parts.map((part, i) => {
+                        switch (part.type) {
+                          case "text":
+                            return (
+                              <Response key={`${message.id}-${i}`}>
+                                {part.text}
+                              </Response>
+                            );
+                          case "reasoning":
+                            return (
+                              <Reasoning
+                                key={`${message.id}-${i}`}
+                                className="w-full"
+                                isStreaming={status === "streaming"}
+                              >
+                                <ReasoningTrigger />
+                                <ReasoningContent>{part.text}</ReasoningContent>
+                              </Reasoning>
+                            );
+                          default:
+                            return null;
+                        }
+                      })}
+                    </MessageContent>
+                  </Message>
+                </div>
+              ))}
+              {status === "submitted" && <Loader />}
+            </ConversationContent>
+          </Conversation>
           <div ref={bottomRef} />
-        </Conversation>
-      </div>
+        </div>
 
-      {/* Fixed input area */}
-      <div className="bottom-0 left-0 w-full bg-background border-t">
-        <div className="p-4">
-          <PromptInput onSubmit={handleSubmit}>
-            <PromptInputTextarea
-              onChange={(e) => setInput(e.target.value)}
-              value={input}
-            />
-            <PromptInputToolbar>
-              <PromptInputTools>
-                <PromptInputButton
-                  onClick={() => setWebSearch(!webSearch)}
-                  variant={webSearch ? "default" : "ghost"}
-                >
-                  <GlobeIcon size={16} />
-                  <span>Search</span>
-                </PromptInputButton>
+        {/* Fixed input area */}
+        <div className="bottom-0 left-0 w-full bg-background border-t">
+          <div className="p-4">
+            <PromptInput onSubmit={handleSubmit}>
+              <PromptInputTextarea
+                onChange={(e) => setInput(e.target.value)}
+                value={input}
+              />
+              <PromptInputToolbar>
+                <PromptInputTools>
+                  <PromptInputButton
+                    onClick={() => setWebSearch(!webSearch)}
+                    variant={webSearch ? "default" : "ghost"}
+                  >
+                    <GlobeIcon size={16} />
+                    <span>Search</span>
+                  </PromptInputButton>
 
-                <PromptInputModelSelect onValueChange={setModel} value={model}>
-                  <PromptInputModelSelectTrigger>
-                    <PromptInputModelSelectValue />
-                  </PromptInputModelSelectTrigger>
-                  <PromptInputModelSelectContent>
+                  <SimpleSelect onValueChange={setModel} value={model}>
                     {models.map((m) => (
-                      <PromptInputModelSelectItem key={m.value} value={m.value}>
+                      <SimpleSelectItem key={m.value} value={m.value}>
                         {m.name}
-                      </PromptInputModelSelectItem>
+                      </SimpleSelectItem>
                     ))}
-                  </PromptInputModelSelectContent>
-                </PromptInputModelSelect>
-              </PromptInputTools>
-              <PromptInputSubmit disabled={!input} status={status} />
-            </PromptInputToolbar>
-          </PromptInput>
+                  </SimpleSelect>
+                </PromptInputTools>
+                <PromptInputSubmit disabled={!input} status={status} />
+              </PromptInputToolbar>
+            </PromptInput>
+          </div>
         </div>
       </div>
-    </div>
+    </PortalProvider>
   );
 }

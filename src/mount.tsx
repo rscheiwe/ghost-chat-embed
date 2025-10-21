@@ -7,6 +7,7 @@ const GC_COMPILED_CSS = "";
 
 export interface MountOptions {
   config: GhostChatConfig;
+  portalContainer?: HTMLElement;
 }
 
 /**
@@ -19,7 +20,7 @@ export function mountIntoShadow(
 ): () => void {
   // Create React root and render
   const root = createRoot(container);
-  root.render(<ChatApp config={options.config} />);
+  root.render(<ChatApp config={options.config} portalContainer={options.portalContainer} />);
 
   // Return unmount function
   return () => {
