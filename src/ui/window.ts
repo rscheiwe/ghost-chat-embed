@@ -7,7 +7,8 @@ import { getString } from "../i18n";
  */
 export function createWindow(
   config: GhostChatConfig,
-  onClose: () => void
+  onClose: () => void,
+  onFullscreen?: () => void
 ): HTMLElement {
   const { theme, i18n } = config;
 
@@ -58,7 +59,7 @@ export function createWindow(
 
   // Header
   if (theme?.window?.showTitle !== false) {
-    const header = createHeader(config, onClose);
+    const header = createHeader(config, onClose, onFullscreen);
     container.appendChild(header);
   }
 
@@ -93,7 +94,8 @@ export function createWindow(
  */
 function createHeader(
   config: GhostChatConfig,
-  onClose: () => void
+  onClose: () => void,
+  onFullscreen?: () => void
 ): HTMLElement {
   const { theme, i18n } = config;
 
@@ -134,6 +136,43 @@ function createHeader(
 
   header.appendChild(titleSection);
 
+  // Buttons container
+  const buttonsContainer = createElement("div", ["flex", "items-center", "gap-2"]);
+
+  // Fullscreen button
+  if (onFullscreen) {
+    const fullscreenBtn = createElement(
+      "button",
+      [
+        "gc-fullscreen-btn",
+        "flex",
+        "items-center",
+        "justify-center",
+        "w-8",
+        "h-8",
+        "rounded-full",
+        "hover:bg-muted",
+        "transition-colors",
+        "focus:outline-none",
+        "focus:ring-2",
+        "focus:ring-primary",
+      ],
+      {
+        type: "button",
+        "aria-label": "Toggle fullscreen",
+      }
+    );
+
+    fullscreenBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+      </svg>
+    `;
+
+    fullscreenBtn.addEventListener("click", onFullscreen);
+    buttonsContainer.appendChild(fullscreenBtn);
+  }
+
   // Close button
   const closeBtn = createElement(
     "button",
@@ -165,22 +204,59 @@ function createHeader(
   `;
 
   closeBtn.addEventListener("click", onClose);
+  buttonsContainer.appendChild(closeBtn);
 
-  header.appendChild(closeBtn);
+  header.appendChild(buttonsContainer);
 
   return header;
 }
 
 /**
- * Show the window
+ * Show the window with animation
  */
 export function showWindow(window: HTMLElement): void {
   window.style.display = "flex";
+  window.classList.remove("gc-animating-out");
+  window.classList.add("gc-animating-in");
 }
 
 /**
- * Hide the window
+ * Hide the window with animation
  */
 export function hideWindow(window: HTMLElement): void {
-  window.style.display = "none";
+  window.classList.remove("gc-animating-in");
+  window.classList.add("gc-animating-out");
+
+  // Wait for animation to complete before hiding
+  setTimeout(() => {
+    window.style.display = "none";
+    window.classList.remove("gc-animating-out");
+  }, 200); // Match animation duration
+}
+
+/**
+ * Toggle fullscreen mode
+ */
+export function toggleFullscreen(window: HTMLElement, overlay: HTMLElement): void {
+  const isFullscreen = window.classList.contains("gc-fullscreen");
+
+  if (isFullscreen) {
+    // Exit fullscreen
+    window.classList.remove("gc-fullscreen");
+
+    // Animate overlay out
+    overlay.classList.remove("gc-animating-in");
+    overlay.classList.add("gc-animating-out");
+
+    setTimeout(() => {
+      overlay.style.display = "none";
+      overlay.classList.remove("gc-animating-out");
+    }, 150);
+  } else {
+    // Enter fullscreen
+    window.classList.add("gc-fullscreen");
+    overlay.style.display = "block";
+    overlay.classList.remove("gc-animating-out");
+    overlay.classList.add("gc-animating-in");
+  }
 }

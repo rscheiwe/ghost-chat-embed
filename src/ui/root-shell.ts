@@ -1,9 +1,10 @@
 import type { GhostChatConfig } from "../types";
 import { createBubble, createTooltip } from "./bubble";
-import { createWindow, showWindow, hideWindow } from "./window";
+import { createWindow, showWindow, hideWindow, toggleFullscreen } from "./window";
 import { telemetry } from "../telemetry";
 import { getDirection } from "../i18n";
 import { mountIntoShadow } from "../mount";
+import { createElement } from "../utils/dom";
 
 /**
  * Simplified root shell controller
@@ -18,6 +19,7 @@ export class RootShellController {
   // UI elements
   private bubble!: HTMLElement;
   private window!: HTMLElement;
+  private overlay!: HTMLElement;
   private reactContainer!: HTMLElement;
 
   constructor(shadow: ShadowRoot, config: GhostChatConfig) {
@@ -51,8 +53,19 @@ export class RootShellController {
       setTimeout(() => tooltip.remove(), 5000);
     }
 
+    // Create overlay for fullscreen mode
+    this.overlay = createElement("div", ["gc-overlay"]);
+    this.overlay.style.cssText =
+      "display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 40; pointer-events: auto;";
+    this.overlay.addEventListener("click", () => this.exitFullscreen());
+    this.shadow.appendChild(this.overlay);
+
     // Create window shell (vanilla)
-    this.window = createWindow(this.config, () => this.closeWindow());
+    this.window = createWindow(
+      this.config,
+      () => this.closeWindow(),
+      () => this.toggleFullscreen()
+    );
     this.window.style.fontFamily = fontFamily;
     this.shadow.appendChild(this.window);
 
@@ -105,8 +118,28 @@ export class RootShellController {
 
   private closeWindow(): void {
     this.isOpen = false;
+    this.exitFullscreen(); // Exit fullscreen if active
     hideWindow(this.window);
     telemetry.track("gc.close");
+  }
+
+  private toggleFullscreen(): void {
+    toggleFullscreen(this.window, this.overlay);
+  }
+
+  private exitFullscreen(): void {
+    if (this.window.classList.contains("gc-fullscreen")) {
+      this.window.classList.remove("gc-fullscreen");
+
+      // Animate overlay out
+      this.overlay.classList.remove("gc-animating-in");
+      this.overlay.classList.add("gc-animating-out");
+
+      setTimeout(() => {
+        this.overlay.style.display = "none";
+        this.overlay.classList.remove("gc-animating-out");
+      }, 150); // Match overlay animation duration
+    }
   }
 
   private handleAutoOpen(): void {

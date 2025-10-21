@@ -39,7 +39,7 @@ export function init(userConfig: unknown): void {
     const host = document.createElement("div");
     host.id = "ghost-chat-root";
     // Ensure host doesn't interfere with page layout
-    host.style.cssText = "all: initial; position: fixed; inset: 0; pointer-events: none; z-index: 999999;";
+    host.style.cssText = "position: fixed; inset: 0; pointer-events: none; z-index: 999999;";
     document.body.appendChild(host);
 
     // Attach shadow root
