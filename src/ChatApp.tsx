@@ -34,11 +34,19 @@ import {
   SourcesContent,
   SourcesTrigger,
 } from "@/components/ai-elements/sources";
+import { Suggestions, type Suggestion } from "@/components/ai-elements/suggestions";
+import { WelcomeMessage } from "@/components/ai-elements/welcome-message";
 import type { GhostChatConfig } from "./types";
 
 const models = [
   { name: "GPT 4o", value: "openai/gpt-4o" },
   { name: "Deepseek R1", value: "deepseek/deepseek-r1" },
+];
+
+const defaultSuggestions: Suggestion[] = [
+  { text: "What can you help me with?", prompt: "What can you help me with?" },
+  { text: "Tell me about your features", prompt: "Tell me about your features" },
+  { text: "How do I get started?", prompt: "How do I get started?" },
 ];
 
 export default function ChatApp({
@@ -87,6 +95,10 @@ export default function ChatApp({
     }
   };
 
+  const handleSuggestionClick = (prompt: string) => {
+    sendMessage({ text: prompt }, { body: { model, webSearch } });
+  };
+
   return (
     <PortalProvider container={portalContainer ?? null}>
       <div className="flex h-full flex-col overflow-hidden">
@@ -94,6 +106,18 @@ export default function ChatApp({
         <div className="flex-1 overflow-y-auto px-4" style={{ overscrollBehavior: 'contain' }}>
           <Conversation>
             <ConversationContent>
+              {messages.length === 0 && (
+                <>
+                  <WelcomeMessage
+                    message="Hi! I'm your AI assistant. How can I help you today?"
+                    emoji="👋"
+                  />
+                  <Suggestions
+                    suggestions={defaultSuggestions}
+                    onSuggestionClick={handleSuggestionClick}
+                  />
+                </>
+              )}
               {messages.map((message) => (
                 <div key={message.id}>
                   {message.role === "assistant" && (
