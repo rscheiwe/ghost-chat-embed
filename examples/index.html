@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GhostChat Embed Demo</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        line-height: 1.6;
+        color: #333;
+      }
+      h1 {
+        color: #3b81f6;
+        margin-bottom: 0.5rem;
+      }
+      .subtitle {
+        color: #666;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+      }
+      .section {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+      }
+      .section h2 {
+        margin-top: 0;
+        color: #222;
+      }
+      code {
+        background: #e9ecef;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: "Monaco", "Courier New", monospace;
+        font-size: 0.9em;
+      }
+      .code-block {
+        background: #282c34;
+        color: #abb2bf;
+        padding: 1rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+      .code-block code {
+        background: none;
+        color: inherit;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GhostChat Embed Demo</h1>
+    <p class="subtitle">
+      Open-source, Tailwind/shadcn-styled chat bubble with Shadow DOM isolation
+    </p>
+
+    <div class="section">
+      <h2>Welcome!</h2>
+      <p>
+        This is a demo page for GhostChat Embed. The chat bubble should appear
+        in the bottom-right corner of your screen.
+      </p>
+      <p>
+        Click on it to open the chat window and interact with the AI assistant.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Features</h2>
+      <ul>
+        <li>✨ Shadow DOM isolation for zero CSS conflicts</li>
+        <li>🎨 Tailwind CSS + shadcn/ui styling</li>
+        <li>📡 SSE (Server-Sent Events) streaming</li>
+        <li>🌍 i18n support with RTL</li>
+        <li>♿ Full accessibility (ARIA, keyboard navigation)</li>
+        <li>📱 Responsive and mobile-friendly</li>
+        <li>🎯 Draggable chat bubble</li>
+        <li>⚙️ Highly configurable</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Quick Start</h2>
+      <p>To integrate GhostChat into your website, add this script:</p>
+      <div class="code-block">
+        <code>
+&lt;script type="module"&gt;
+  import GhostChat from "https://cdn.jsdelivr.net/npm/ghost-chat-embed/dist/web.js";
+  GhostChat.init({
+    apiHost: "http://localhost:3000",
+    theme: {
+      window: { title: "Chat Assistant" },
+    },
+  });
+&lt;/script&gt;
+        </code>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Documentation</h2>
+      <p>
+        For full documentation, visit the
+        <a
+          href="https://github.com/yourusername/ghost-chat-embed"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub repository</a
+        >.
+      </p>
+    </div>
+
+    <!-- GhostChat Integration -->
+    <script type="module">
+      import GhostChat from "../src/index.ts";
+
+      GhostChat.init({
+        apiHost: "http://localhost:3000",
+        chatId: "demo",
+        theme: {
+          accentColor: "#3B81F6",
+          button: {
+            right: 20,
+            bottom: 20,
+            size: 56,
+            dragAndDrop: true,
+          },
+          tooltip: {
+            show: true,
+            message: "Hi there! 👋 Try me out!",
+          },
+          window: {
+            title: "GhostChat Demo",
+            height: 640,
+            width: 400,
+            fontSize: 16,
+            darkMode: false,
+            showTitle: true,
+          },
+        },
+        features: {
+          includePromptToolbar: false,
+          includeModelSelection: false,
+          includeFileUpload: false,
+          includeSuggestions: true,
+        },
+        i18n: {
+          locale: "en",
+          strings: {
+            welcome: "👋 Welcome to GhostChat! How can I help you today?",
+            placeholder: "Type your message here...",
+          },
+        },
+        telemetry: {
+          enabled: true,
+        },
+      });
+    </script>
+  </body>
+</html>
