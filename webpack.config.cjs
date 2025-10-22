@@ -26,11 +26,22 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true,
+          },
+        },
         exclude: /node_modules/,
       },
       {
         test: /\.css$/,
+        resourceQuery: /inline/,
+        type: 'asset/source',
+      },
+      {
+        test: /\.css$/,
+        resourceQuery: { not: [/inline/] },
         use: [
           'style-loader',
           {

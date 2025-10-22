@@ -328,6 +328,10 @@ telemetry: {
 
 Events: `gc.open`, `gc.close`, `gc.send`, `gc.receive`, `gc.error`
 
+## TODO
+
+[ ] Update webpack config for more graceful handling
+
 ## 🤝 Contributing
 
 Contributions welcome! Please read our [Contributing Guide](CONTRIBUTING.md) first.
