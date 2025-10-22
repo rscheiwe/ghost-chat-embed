@@ -61,10 +61,14 @@ module.exports = {
     },
     port: 8082,
     hot: true,
+    allowedHosts: 'all',
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
       'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+    },
+    devMiddleware: {
+      publicPath: '/',
     },
   },
   performance: {

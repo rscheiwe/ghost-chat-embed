@@ -3,114 +3,670 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GhostChat Embed Demo</title>
+    <title>GhostChat Embed Demo - Shadow DOM Isolated AI Chat Widget</title>
+    <meta name="description" content="Open-source, production-ready AI chat widget with Shadow DOM isolation, Tailwind CSS styling, and zero conflicts" />
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
       body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #1a1a1a;
+        background: #ffffff;
+        min-height: 100vh;
+        padding-top: 100px;
+      }
+
+      .beta-banner {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: #eff6ff;
+        color: #1e40af;
+        text-align: center;
+        padding: 2px 16px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        z-index: 999;
+        border-top: 1px solid rgba(191, 219, 254, 0.8);
+        border-bottom: 1px solid rgba(191, 219, 254, 0.8);
+      }
+
+      .beta-banner a {
+        color: #1e40af;
+        text-decoration: underline;
+        font-weight: 600;
+      }
+
+      .beta-banner a:hover {
+        color: #1e3a8a;
+      }
+
+      .sticky-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        z-index: 1000;
+        padding: 12px 20px;
+      }
+
+      .sticky-header .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .sticky-header .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        text-decoration: none;
+      }
+
+      .sticky-header .logo-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .sticky-header .github-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .sticky-header .github-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      }
+
+      .github-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .container {
         max-width: 1200px;
         margin: 0 auto;
         padding: 40px 20px;
-        line-height: 1.6;
-        color: #333;
       }
-      h1 {
-        color: #3b81f6;
-        margin-bottom: 0.5rem;
+
+      .hero {
+        text-align: center;
+        padding: 60px 20px;
+        margin-bottom: 40px;
+        background: white;
+        border-radius: 16px;
       }
-      .subtitle {
-        color: #666;
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
+
+      .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
+
+      .hero .subtitle {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        color: #1a1a1a;
+      }
+
+      .hero .tagline {
+        font-size: 1rem;
+        color: #555;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        border: 1px solid #667eea40;
+        color: #667eea;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin: 0 4px;
+        font-weight: 500;
+      }
+
       .section {
-        background: #f8f9fa;
-        padding: 2rem;
-        border-radius: 8px;
+        background: white;
+        padding: 2.5rem;
+        border-radius: 16px;
         margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid #f0f0f0;
       }
+
       .section h2 {
-        margin-top: 0;
-        color: #222;
+        color: #667eea;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
       }
-      code {
-        background: #e9ecef;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-family: "Monaco", "Courier New", monospace;
-        font-size: 0.9em;
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
       }
+
+      .feature-card {
+        padding: 1.5rem;
+        background: #fafbfc;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      }
+
+      .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+        border-color: #667eea;
+      }
+
+      .feature-card h3 {
+        color: #667eea;
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .feature-card .emoji {
+        font-size: 1.5rem;
+      }
+
+      .feature-card p {
+        color: #555;
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
       .code-block {
-        background: #282c34;
-        color: #abb2bf;
-        padding: 1rem;
-        border-radius: 6px;
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 1.5rem;
+        border-radius: 12px;
         overflow-x: auto;
         margin: 1rem 0;
+        font-family: "Monaco", "Courier New", monospace;
+        font-size: 0.9rem;
+        line-height: 1.8;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       }
-      .code-block code {
-        background: none;
-        color: inherit;
+
+      .code-block pre {
+        margin: 0;
         padding: 0;
+      }
+
+      .code-block code {
+        color: inherit;
+        font-family: inherit;
+        font-size: inherit;
+      }
+
+      .keyword { color: #569cd6; }
+      .string { color: #ce9178; }
+      .function { color: #dcdcaa; }
+      .comment { color: #6a9955; }
+      .property { color: #9cdcfe; }
+
+      .cta-section {
+        text-align: center;
+        padding: 3rem 2rem;
+        background: white;
+        border-radius: 16px;
+        margin-top: 3rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        border: 1px solid #f0f0f0;
+      }
+
+      .cta-section h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 14px 32px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        font-size: 1rem;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-secondary {
+        background: white;
+        color: #667eea;
+        border: 2px solid #667eea;
+      }
+
+      .btn-secondary:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .highlight-box {
+        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        border-left: 4px solid #667eea;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+      }
+
+      .highlight-box strong {
+        color: #667eea;
+      }
+
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      ul li {
+        padding: 0.5rem 0;
+        padding-left: 1.5rem;
+        position: relative;
+      }
+
+      ul li:before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: #667eea;
+        font-weight: bold;
+      }
+
+      a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .demo-note {
+        background: #fef3c7;
+        border: 2px solid #fbbf24;
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        margin: 1.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .demo-note .icon {
+        font-size: 1.5rem;
+      }
+
+      .tech-stack {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .tech-item {
+        padding: 2rem;
+        background: linear-gradient(135deg, #667eea08 0%, #764ba208 100%);
+        border: 2px solid #667eea20;
+        border-radius: 12px;
+        text-align: center;
+      }
+
+      .tech-item:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        transition: all 0.2s ease;
+      }
+
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 2.5rem;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .cta-buttons {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+
+        .sticky-header .logo span:not(.logo-gradient) {
+          display: none;
+        }
+
+        .sticky-header .github-link span {
+          display: none;
+        }
+
+        .sticky-header .github-link {
+          padding: 8px 12px;
+        }
       }
     </style>
   </head>
   <body>
-    <h1>GhostChat Embed Demo</h1>
-    <p class="subtitle">
-      Open-source, Tailwind/shadcn-styled chat bubble with Shadow DOM isolation
-    </p>
+    <header class="sticky-header">
+      <div class="container">
+        <a href="#" class="logo">
+          <span style="font-size: 1.5rem;">🚀</span>
+          <span class="logo-gradient">GhostChat</span>
+        </a>
+        <a href="https://github.com/rscheiwe/ghost-chat-embed" class="github-link" target="_blank" rel="noopener">
+          <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+          </svg>
+          <span>View on GitHub</span>
+        </a>
+      </div>
+    </header>
 
-    <div class="section">
-      <h2>Welcome!</h2>
-      <p>
-        This is a demo page for GhostChat Embed. The chat bubble should appear
-        in the bottom-right corner of your screen.
-      </p>
-      <p>
-        Click on it to open the chat window and interact with the AI assistant.
-      </p>
+    <div class="beta-banner">
+      ✨ GhostChat Embed is in beta! <a href="https://github.com/rscheiwe/ghost-chat-embed">Learn more</a>
     </div>
 
-    <div class="section">
-      <h2>Features</h2>
-      <ul>
-        <li>✨ Shadow DOM isolation for zero CSS conflicts</li>
-        <li>🎨 Tailwind CSS + shadcn/ui styling</li>
-        <li>📡 SSE (Server-Sent Events) streaming</li>
-        <li>🌍 i18n support with RTL</li>
-        <li>♿ Full accessibility (ARIA, keyboard navigation)</li>
-        <li>📱 Responsive and mobile-friendly</li>
-        <li>🎯 Draggable chat bubble</li>
-        <li>⚙️ Highly configurable</li>
-      </ul>
-    </div>
-
-    <div class="section">
-      <h2>Quick Start</h2>
-      <p>To integrate GhostChat into your website, add this script:</p>
-      <div class="code-block">
-        <code>
-          &lt;script type="module"&gt; import GhostChat from
-          "https://cdn.jsdelivr.net/npm/ghost-chat-embed/dist/web.js";
-          GhostChat.init({ apiHost: "http://localhost:3000", theme: { window: {
-          title: "Chat Assistant" }, }, }); &lt;/script&gt;
-        </code>
+    <div class="hero">
+      <h1>🚀 GhostChat Embed</h1>
+      <p class="subtitle">Production-Ready AI Chat Widget for Any Website</p>
+      <p class="tagline">
+        Open-source, Shadow DOM isolated, zero CSS conflicts
+      </p>
+      <p class="tagline" style="margin-top: 0.8rem; font-weight: 600; color: #667eea;">
+        Built with shadcn/ui + Vercel AI SDK
+      </p>
+      <div style="margin-top: 1.5rem;">
+        <span class="badge">v1.0.0</span>
+        <span class="badge">shadcn/ui</span>
+        <span class="badge">Vercel AI SDK</span>
+        <span class="badge">TypeScript</span>
+        <span class="badge">MIT License</span>
       </div>
     </div>
 
-    <div class="section">
-      <h2>Documentation</h2>
-      <p>
-        For full documentation, visit the
-        <a
-          href="https://github.com/rscheiwe/ghost-chat-embed"
-          target="_blank"
-          rel="noopener noreferrer"
-          >GitHub repository</a
-        >.
-      </p>
+    <div class="container">
+      <div class="demo-note">
+        <span class="icon">👉</span>
+        <div>
+          <strong>Try it now!</strong> Click the chat button in the bottom-right corner to see GhostChat in action. Try the fullscreen mode and suggestion buttons!
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>✨ Key Features</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <h3><span class="emoji">🛡️</span> Shadow DOM Isolation</h3>
+            <p>Complete CSS isolation prevents conflicts with your site's styles. Zero interference guaranteed.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3><span class="emoji">🎨</span> shadcn/ui Design</h3>
+            <p>Professional UI components from shadcn/ui library. Accessible, customizable, and beautifully designed.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3><span class="emoji">🚀</span> Fullscreen Mode</h3>
+            <p>Expandable chat window with smooth animations and dimmed overlay for focused conversations.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3><span class="emoji">💡</span> Smart Suggestions</h3>
+            <p>Pre-configured prompt buttons help users get started quickly with relevant questions.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3><span class="emoji">🌊</span> Vercel AI SDK</h3>
+            <p>Powered by Vercel's ai-elements and @ai-sdk/react for streaming conversations, reasoning, and sources.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3><span class="emoji">♿</span> Accessible</h3>
+            <p>Full ARIA support, keyboard navigation, and screen reader compatibility built-in.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3><span class="emoji">🌍</span> i18n Ready</h3>
+            <p>Multi-language support with RTL layout for Arabic, Hebrew, and more.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3><span class="emoji">📱</span> Mobile Optimized</h3>
+            <p>Responsive design that works perfectly on all screen sizes and devices.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3><span class="emoji">🎯</span> Drag & Drop</h3>
+            <p>Optional draggable chat bubble lets users position it anywhere on the page.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3><span class="emoji">🔧</span> Easy Integration</h3>
+            <p>One script tag and you're done. No build process or complex setup required.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3><span class="emoji">🎬</span> Smooth Animations</h3>
+            <p>Polished fade-in/out transitions and scroll behavior for a premium feel.</p>
+          </div>
+
+          <div class="feature-card">
+            <h3><span class="emoji">⚙️</span> Highly Configurable</h3>
+            <p>Customize colors, sizes, positioning, features, and behavior to match your brand.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>🚀 Quick Start</h2>
+        <p style="margin-bottom: 1.5rem;">Add GhostChat to your website in 30 seconds:</p>
+
+        <div class="highlight-box">
+          <strong>Step 1:</strong> Add the script tag to your HTML
+        </div>
+
+        <div class="code-block"><pre><code><span class="keyword">&lt;script</span> <span class="property">type</span>=<span class="string">"module"</span><span class="keyword">&gt;</span>
+  <span class="keyword">import</span> GhostChat <span class="keyword">from</span> <span class="string">"https://cdn.jsdelivr.net/npm/ghost-chat-embed/dist/web.js"</span>;
+
+  GhostChat.<span class="function">init</span>({
+    <span class="property">apiHost</span>: <span class="string">"https://your-api.com"</span>,
+    <span class="property">theme</span>: {
+      <span class="property">window</span>: {
+        <span class="property">title</span>: <span class="string">"AI Assistant"</span>,
+        <span class="property">darkMode</span>: <span class="keyword">false</span>
+      }
+    }
+  });
+<span class="keyword">&lt;/script&gt;</span></code></pre></div>
+
+        <div class="highlight-box">
+          <strong>Step 2:</strong> Done! 🎉 Your chat widget is live
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>⚙️ Advanced Configuration</h2>
+        <p style="margin-bottom: 1.5rem;">Customize every aspect of your chat widget:</p>
+
+        <div class="code-block"><pre><code>GhostChat.<span class="function">init</span>({
+  <span class="comment">// Required: Your AI chat API endpoint</span>
+  <span class="property">apiHost</span>: <span class="string">"https://api.yoursite.com"</span>,
+
+  <span class="comment">// Optional: Theme customization</span>
+  <span class="property">theme</span>: {
+    <span class="property">accentColor</span>: <span class="string">"#667eea"</span>,
+    <span class="property">button</span>: {
+      <span class="property">size</span>: <span class="keyword">56</span>,
+      <span class="property">right</span>: <span class="keyword">20</span>,
+      <span class="property">bottom</span>: <span class="keyword">20</span>,
+      <span class="property">dragAndDrop</span>: <span class="keyword">true</span>
+    },
+    <span class="property">window</span>: {
+      <span class="property">title</span>: <span class="string">"Chat Assistant"</span>,
+      <span class="property">width</span>: <span class="keyword">400</span>,
+      <span class="property">height</span>: <span class="keyword">640</span>,
+      <span class="property">darkMode</span>: <span class="keyword">false</span>
+    },
+    <span class="property">tooltip</span>: {
+      <span class="property">show</span>: <span class="keyword">true</span>,
+      <span class="property">message</span>: <span class="string">"Hi there! 👋"</span>
+    }
+  },
+
+  <span class="comment">// Optional: Localization</span>
+  <span class="property">i18n</span>: {
+    <span class="property">locale</span>: <span class="string">"en"</span>,
+    <span class="property">strings</span>: {
+      <span class="property">welcome</span>: <span class="string">"Welcome to our chat!"</span>,
+      <span class="property">placeholder</span>: <span class="string">"Type your message..."</span>
+    }
+  }
+});</code></pre></div>
+      </div>
+
+      <div class="section">
+        <h2>🏗️ Built on Industry-Leading Tech</h2>
+        <div class="tech-stack">
+          <div class="tech-item">
+            <h3 style="color: #667eea; margin-bottom: 0.8rem; font-size: 1.3rem;">
+              <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">⚡</span>
+              Vercel AI SDK
+            </h3>
+            <p style="color: #555; line-height: 1.6;">
+              Powered by <strong>@ai-sdk/react</strong> and <strong>ai-elements</strong> - Vercel's production-ready components for streaming AI conversations, reasoning displays, and source citations. Get enterprise-grade AI chat with zero configuration.
+            </p>
+          </div>
+          <div class="tech-item">
+            <h3 style="color: #667eea; margin-bottom: 0.8rem; font-size: 1.3rem;">
+              <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">🎨</span>
+              shadcn/ui Components
+            </h3>
+            <p style="color: #555; line-height: 1.6;">
+              Beautiful, accessible UI built with <strong>shadcn/ui</strong> components - professionally designed, fully customizable, and maintained by the community. Includes Select, Dialog, Tooltip, and more.
+            </p>
+          </div>
+          <div class="tech-item">
+            <h3 style="color: #667eea; margin-bottom: 0.8rem; font-size: 1.3rem;">
+              <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">🛡️</span>
+              Shadow DOM Isolation
+            </h3>
+            <p style="color: #555; line-height: 1.6;">
+              Complete style isolation using Shadow DOM ensures zero conflicts with your site. All Tailwind CSS classes and shadcn/ui components stay perfectly contained - no CSS leakage, no z-index wars.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>🎯 What Makes GhostChat Different?</h2>
+        <ul>
+          <li><strong>True Shadow DOM Isolation:</strong> Unlike other widgets, GhostChat uses Shadow DOM to completely isolate styles. No CSS conflicts, no z-index wars, no layout shifts.</li>
+          <li><strong>Modern Stack:</strong> Built with React/Preact, Tailwind CSS, shadcn/ui, and Vercel AI SDK for the best developer and user experience.</li>
+          <li><strong>Production Ready:</strong> Battle-tested features like scroll containment, portal-based dropdowns, and smooth animations.</li>
+          <li><strong>Developer Friendly:</strong> TypeScript support, comprehensive docs, and easy customization.</li>
+          <li><strong>Open Source:</strong> MIT licensed. Contribute, fork, or use it however you want.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>📦 Installation Options</h2>
+
+        <h3 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Via CDN (Recommended)</h3>
+        <div class="code-block"><pre><code><span class="keyword">&lt;script</span> <span class="property">type</span>=<span class="string">"module"</span> <span class="property">src</span>=<span class="string">"https://cdn.jsdelivr.net/npm/ghost-chat-embed/dist/web.js"</span><span class="keyword">&gt;&lt;/script&gt;</span></code></pre></div>
+
+        <h3 style="color: #667eea; margin-top: 1.5rem; margin-bottom: 1rem;">Via npm</h3>
+        <div class="code-block"><pre><code><span class="comment"># Install package</span>
+npm install ghost-chat-embed
+
+<span class="comment"># Import in your code</span>
+<span class="keyword">import</span> GhostChat <span class="keyword">from</span> <span class="string">'ghost-chat-embed'</span>;
+GhostChat.<span class="function">init</span>({ <span class="comment">/* config */</span> });</code></pre></div>
+      </div>
+
+      <div class="cta-section">
+        <h2>Ready to Add AI Chat to Your Website?</h2>
+        <p style="font-size: 1.1rem; margin-bottom: 1rem; color: #555;">
+          Join developers who are building better user experiences with GhostChat
+        </p>
+        <div class="cta-buttons">
+          <a href="https://github.com/rscheiwe/ghost-chat-embed" class="btn btn-primary" target="_blank" rel="noopener">
+            📖 View Documentation
+          </a>
+          <a href="https://github.com/rscheiwe/ghost-chat-embed" class="btn btn-secondary" target="_blank" rel="noopener">
+            ⭐ Star on GitHub
+          </a>
+        </div>
+        <p style="margin-top: 2rem; font-size: 0.9rem; color: #777;">
+          Open source • MIT License • Built with ❤️
+        </p>
+      </div>
     </div>
 
     <!-- GhostChat Integration -->
@@ -121,7 +677,7 @@
         apiHost: "http://localhost:3000",
         chatId: "demo",
         theme: {
-          accentColor: "#3B81F6",
+          accentColor: "#667eea",
           button: {
             right: 20,
             bottom: 20,
@@ -140,12 +696,6 @@
             darkMode: false,
             showTitle: true,
           },
-        },
-        features: {
-          includePromptToolbar: false,
-          includeModelSelection: false,
-          includeFileUpload: false,
-          includeSuggestions: true,
         },
         i18n: {
           locale: "en",

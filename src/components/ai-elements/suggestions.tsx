@@ -31,8 +31,8 @@ export function Suggestions({
             type="button"
             onClick={() => onSuggestionClick(suggestion.prompt)}
             className={cn(
-              "px-6 py-3 rounded-full text-sm font-medium transition-all",
-              "border-2 border-primary text-primary bg-background",
+              "px-6 py-3 rounded-full text-sm transition-all",
+              "border-[1px] border-primary text-primary bg-background",
               "hover:bg-primary hover:text-primary-foreground",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
               "text-center"

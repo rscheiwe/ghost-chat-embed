@@ -14,7 +14,7 @@ export function WelcomeMessage({
 }: WelcomeMessageProps) {
   return (
     <div
-      className={cn("flex justify-start py-4", className)}
+      className={cn("flex justify-start py-4 mb-4", className)}
       {...props}
     >
       <div className="max-w-[80%] rounded-2xl bg-muted px-4 py-3 text-sm">
